@@ -1,5 +1,16 @@
-clc
-clear
+function [res, N] = dataParser(testID, freqGroup, ustFolder, csvFolder)
+
+% This function reads the test matrix data, gives the file information and
+% perform simple analysis on it.
+
+plot_option = true;
+
+%% Debug
+if nargin < 4
+    % Location of Data Files
+    ustFolder = '/Volumes/Seagate/cervical model/model_C4/Instron_020617/';
+    csvFolder = '/Volumes/Seagate/cervical model/model_C4/Instron_020617/Instron_020617/';
+end
 
 %%  Paths and File Location
 
@@ -28,10 +39,6 @@ addpath(utilitiesFolder);
 
 excelFile = 'decorrelation.xlsx';
 
-% Location of Large Data Files
-ustFolder = '/Volumes/Seagate/cervical model/model_C4/Instron_020617/';
-csvFolder = '/Volumes/Seagate/cervical model/model_C4/Instron_020617/Instron_020617/';
-
 % Read and Parse XLSX file
 
 [~,~,raw] = xlsread(excelFile,'C4Model');
@@ -56,7 +63,7 @@ end
 
 %% Determine file location of ust and csv ustFile & csvFile
 
-ID = find(jobIDs==40,1,'first');
+ID = find(jobIDs==testID,1,'first');
 ustFile = jobs(ID).ustFile;
 ustFileShort = ustFile(1:strfind(ustFile,'.')-1);
 
@@ -66,7 +73,7 @@ csvFile = [csvFolder num2str(jobs(ID).csvGroup),filesep,ustFileShort,...
 timeDelayFile = [projectFolder,'previous',filesep,'timedelay',filesep,jobs(ID).matFile,'.mat'];
 trackingFile = [projectFolder,'previous',filesep,'trackingoutput',filesep,jobs(ID).matFile,'.mat'];
 
-% Check File's Existence
+% Check File's Existence, commented for phase 1
 if exist(ustFile,'file')~=2 || exist(csvFile,'file')~=2
     % error('File Does Not Exist');
 end
@@ -74,37 +81,53 @@ end
 if exist(timeDelayFile,'file')~=2 || exist(trackingFile,'file')~=2
     error('Result File Does Not Exist');
 end
-
-%% Determine the starting frame and ending frame
-
+% Read the data into workspace
 timedelaySpace = load(timeDelayFile,'xs','delay');
 xs = timedelaySpace.xs;
 delay = timedelaySpace.delay;
-timemark = 0.5:11.6666:0.5+11.6666*10; %n-1elements
-fr_mark = zeros(size(timemark)); % n+1 elements
+
+trackingSpace = load(trackingFile);
+data = trackingSpace.data;
+Q = trackingSpace.values.Q;
+
+%% Analysis
+
+% xs: time in ultrasound system, unit: second
+% timemark: some specfic time marks in the real world(Instron),
+% delay: the time delay between the ultrasound and the real world
+
+% Each data has 10 segments of data, each of them lasts for 10 seconds.
+% Between the segments, there is a static period
+
+% Find the starting end ending time for the segments, and put them in an
+% array of 11 elements.
+
+timemark = 0.5:11.6666:0.5+11.6666*10; % Can be improved here
+fr_mark = zeros(size(timemark)); 
 
 for k = 1:11
     fr_mark(k) = findClosest(timemark(k),xs+delay);
 end
 
-trackingSpace = load(trackingFile);
-data = trackingSpace.data;
-Q = trackingSpace.values.Q;
 [~,~,res] = convert_data_struct(data);
 
-
-%% 
-
-freqGroup = 5;
+% For the frequency group, find the start and end
 startingFrame = fr_mark(freqGroup);
 endingFrame = fr_mark(freqGroup+1);
+
+% Q contains information about the NCC correlation ratio, but it is
+% organized in a very different way
 
 startingDataSegment = sum(sum(Q(1:startingFrame,:)>1))*2;
 endingDataSegment = sum(sum(Q(1:endingFrame,:)>1))*2;
 
-
 res = res(startingDataSegment:endingDataSegment);
 N = sum(res>0);
-figure
-histogram(res)
-title(['N=',num2str(N)]);
+
+%% plot_option
+if plot_option
+    figure, 
+    histogram(res);
+    title(['N=',num2str(N), ', Total=', num2str(numel(res))]);
+end
+end

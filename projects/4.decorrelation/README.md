@@ -10,3 +10,9 @@ The common steps of speckle tracking include
 5. Interpret the 400 displacements related to the location of patch, and form a displacement map.
 
 The goal of the current project is to test if the de-correlation is the cause of decreased accuracy in ultrasound movement measurement. The assumption of unchanged pattern isn't true, due to all kind of noise sources. In our previous experiment, we identified two factors, velocity and tissue layer, could possibly change the tracking measurement accuracy. We hope to further investigate whether velocity and the tissue layer would increment signal de-correlation, which is believed to be the direct cause of tracking failure.  
+
+Phase I:
+Use tracking result to find the degree of de-correlation
+
+Phase II:
+Use original raw images and results to find the degree of de-correlation
