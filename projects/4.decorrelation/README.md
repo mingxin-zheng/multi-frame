@@ -13,6 +13,13 @@ The goal of the current project is to test if the de-correlation is the cause of
 
 Phase I:
 Use tracking result to find the degree of de-correlation
+Result: de-correlation ratio decreases over the velocity. Range of values: 0.951 (1mm,4Hz) to .9334(4mm, 10Hz)
+Observation: 1/x dependence
+Possible Improvements:
+a. rewrite the code, take "xlsread" out of loops because of speed
+b. trim the data better in each time segments
+c. correlate the actual speed, rather than absolute average velocity, to the correlation correlation
+
 
 Phase II:
 Use original raw images and results to find the degree of de-correlation

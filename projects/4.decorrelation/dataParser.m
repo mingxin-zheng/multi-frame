@@ -23,7 +23,7 @@ end
 %           -trackingoutput
 %       -decorrelation.xlsx (sheet name:'C4Model')
 %       -dataParser.m
-% - scripts (where decorrelationDataParser.m is located)
+% - scripts 
 %   - utilites
 %       -convert_data_struct.m
 % *external
