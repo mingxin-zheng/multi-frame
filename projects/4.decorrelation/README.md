@@ -12,13 +12,15 @@ The common steps of speckle tracking include
 The goal of the current project is to test if the de-correlation is the cause of decreased accuracy in ultrasound movement measurement. The assumption of unchanged pattern isn't true, due to all kind of noise sources. In our previous experiment, we identified two factors, velocity and tissue layer, could possibly change the tracking measurement accuracy. We hope to further investigate whether velocity and the tissue layer would increment signal de-correlation, which is believed to be the direct cause of tracking failure.  
 
 Phase I:
+
 Use tracking result to find the degree of de-correlation
+
 Result: de-correlation ratio decreases over the velocity. Range of values: 0.951 (1mm,4Hz) to .9334(4mm, 10Hz)
 Observation: 1/x dependence
 Possible Improvements:
-a. rewrite the code, take "xlsread" out of loops because of speed
-b. trim the data better in each time segments
-c. correlate the actual speed, rather than absolute average velocity, to the correlation correlation
+- rewrite the code, take "xlsread" out of loops because of speed
+- trim the data better in each time segments
+- correlate the actual speed, rather than absolute average velocity, to the correlation correlation
 
 
 Phase II:
