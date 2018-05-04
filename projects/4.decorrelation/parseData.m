@@ -22,7 +22,6 @@ trackingFile = [projectFolder,'previous',filesep,'trackingoutput',filesep,jobs(I
 if exist(ustFile,'file')~=2 || exist(csvFile,'file')~=2
     % error('File Does Not Exist');
 end
-
 if exist(timeDelayFile,'file')~=2 || exist(trackingFile,'file')~=2
     error('Result File Does Not Exist');
 end
@@ -35,6 +34,7 @@ delay = timedelaySpace.delay;
 trackingSpace = load(trackingFile);
 data = trackingSpace.data;
 Q = trackingSpace.values.Q;
+
 %% Analysis
 
 % xs: time in ultrasound system, unit: second
@@ -47,18 +47,25 @@ Q = trackingSpace.values.Q;
 % Find the starting end ending time for the segments, and put them in an
 % array of 11 elements.
 
-timemark = 0.5:11.6666:0.5+11.6666*10; % Can be improved here
-fr_mark = zeros(size(timemark)); 
+tm_start = 1.5:11.666:1.5+11.666*9;
+tm_end = 10.5:11.666:10.5+11.666*9;
 
-for k = 1:11
-    fr_mark(k) = findClosest(timemark(k),xs+delay);
+fm_start = zeros(size(tm_start));
+fm_end = zeros(size(tm_end));
+
+for k = 1:10
+    fm_start(k) = findClosest(tm_start(k),xs+delay);
+    fm_end(k) = findClosest(tm_end(k),xs+delay);
 end
 
-[~,~,res] = convert_data_struct(data);
+res = zeros(length(data),1);
+for i = 1:length(data)
+    res(i) = data(i).res;
+end
 
 % For the frequency group, find the start and end
-startingFrame = fr_mark(freqGroup);
-endingFrame = fr_mark(freqGroup+1);
+startingFrame = fm_start(freqGroup);
+endingFrame = fm_end(freqGroup);
 
 % Q contains information about the NCC correlation ratio, but it is
 % organized in a very different way

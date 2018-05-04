@@ -29,15 +29,13 @@ addpath(utilitiesFolder);
 excelFile = 'decorrelation.xlsx';
 
 % Read and Parse XLSX file
-
 [~,~,raw] = xlsread(excelFile,'C4Model');
 
 % Construct Structs from "raw"
-
-% contents(column) in "raw": ID(1), Amplitude(2), Angle(3), ustFile(4), 
-% method(5), roi(6), matFile(7), csvGroup(8), csvFile(9).
-f = raw(1,1:end); % fields
-v = raw(2:end,1:end); % values
+    % contents(column) in "raw": ID(1), Amplitude(2), Angle(3), ustFile(4), 
+    % method(5), roi(6), matFile(7), csvGroup(8), csvFile(9).
+f = raw(1,1:end);       % fields
+v = raw(2:end,1:end);	% values
 jobs = struct(  f{1},v(:,1),f{2},v(:,2),f{3},v(:,3),... 
                 f{4},v(:,4),f{5},v(:,5),f{6},v(:,6),...
                 f{7},v(:,7),f{8},v(:,8),f{9},v(:,9));
